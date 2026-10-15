@@ -1,0 +1,787 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Subject Management | School Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fc;
+            color: #1e293b;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 245px;
+            background: #142d4e;
+            color: white;
+            padding: 25px 18px;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: bold;
+            padding: 5px 10px 30px;
+        }
+
+        .brand span {
+            color: #60a5fa;
+        }
+
+        .nav-title {
+            color: #a9bad0;
+            font-size: 11px;
+            margin: 12px 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-link {
+            display: block;
+            color: #dce7f5;
+            text-decoration: none;
+            padding: 13px 12px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #2563a6;
+            color: white;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .topbar h1 {
+            font-size: 27px;
+            margin-bottom: 7px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .user-badge {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border: 1px solid #e7edf5;
+            border-radius: 13px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(30, 58, 95, 0.04);
+        }
+
+        .card-heading {
+            margin-bottom: 22px;
+        }
+
+        .card-heading h2 {
+            font-size: 19px;
+            margin-bottom: 7px;
+        }
+
+        .card-heading p {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        /* Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d5deea;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        .form-group input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-actions {
+            margin-top: 22px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 11px 18px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #e8eef7;
+            color: #334155;
+        }
+
+        .btn-secondary:hover {
+            background: #dbe5f2;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 8px 12px;
+        }
+
+        .btn-danger:hover {
+            background: #fecaca;
+        }
+
+        /* Subject List */
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            width: 260px;
+            max-width: 100%;
+            padding: 11px 13px;
+            border: 1px solid #d5deea;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: #2563eb;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th {
+            background: #f1f5fb;
+            color: #475569;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        th, td {
+            padding: 15px 14px;
+            text-align: left;
+            border-bottom: 1px solid #e8edf4;
+        }
+
+        td {
+            font-size: 13px;
+        }
+
+        tbody tr:hover {
+            background: #f8faff;
+        }
+
+        .subject-code {
+            display: inline-block;
+            background: #eaf2ff;
+            color: #1d4ed8;
+            padding: 5px 9px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #64748b;
+            padding: 30px;
+        }
+
+        .status-message {
+            display: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .status-message.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-message.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 12px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .brand {
+                padding-bottom: 15px;
+            }
+
+            .nav-title {
+                display: none;
+            }
+
+            .nav-menu {
+                display: flex;
+                overflow-x: auto;
+                gap: 6px;
+            }
+
+            .nav-link {
+                white-space: nowrap;
+                margin: 0;
+                padding: 10px;
+            }
+
+            .main {
+                padding: 16px;
+            }
+
+            .topbar h1 {
+                font-size: 23px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            .list-header {
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">Campus<span>Flow</span></div>
+
+        <p class="nav-title">Main Menu</p>
+
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="students.html" class="nav-link">Students</a>
+            <a href="teachers.html" class="nav-link">Teachers</a>
+            <a href="classes.html" class="nav-link">Classes</a>
+            <a href="subjects.html" class="nav-link active" aria-current="page">Subjects</a>
+            <a href="attendance.html" class="nav-link">Attendance</a>
+            <a href="results.html" class="nav-link">Results</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>Subject Management</h1>
+                <p class="subtitle">
+                    Create And Manage Your School Subjects
+                </p>
+            </div>
+
+            <div class="user-badge">School Administrator</div>
+        </header>
+
+        <div id="status-message" class="status-message"
+             role="status" aria-live="polite"></div>
+
+        <!-- Add Subject Form -->
+        <section class="card">
+            <div class="card-heading">
+                <h2>Add New Subject</h2>
+                <p>Enter The Details Below To Register A Subject.</p>
+            </div>
+
+            <form id="subject-form">
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="subject_name">Subject Name *</label>
+                        <input
+                            type="text"
+                            id="subject_name"
+                            name="subject_name"
+                            placeholder="E.g. Mathematics"
+                            maxlength="100"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject_code">Subject Code *</label>
+                        <input
+                            type="text"
+                            id="subject_code"
+                            name="subject_code"
+                            placeholder="E.g. MAT101"
+                            maxlength="30"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assigned_teacher">
+                            Assigned Teacher
+                        </label>
+                        <input
+                            type="text"
+                            id="assigned_teacher"
+                            name="assigned_teacher"
+                            placeholder="Enter Teacher Name"
+                            maxlength="100"
+                        >
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="submit-button"
+                            class="btn btn-primary">
+                        + Add Subject
+                    </button>
+
+                    <button type="reset" class="btn btn-secondary">
+                        Clear Form
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Existing Subjects -->
+        <section class="card">
+            <div class="list-header">
+                <div class="card-heading" style="margin-bottom: 0;">
+                    <h2>Existing Subjects</h2>
+                    <p>View And Manage Registered Subjects.</p>
+                </div>
+
+                <input
+                    type="search"
+                    id="search-subjects"
+                    class="search-box"
+                    placeholder="Search Subjects..."
+                    aria-label="Search subjects"
+                >
+            </div>
+
+            <div class="table-wrapper">
+                <table id="subjects-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Subject Name</th>
+                            <th>Subject Code</th>
+                            <th>Assigned Teacher</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="subjects-body">
+                        <tr>
+                            <td colspan="5" class="empty-message">
+                                Loading Subjects...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer class="footer">
+            CampusFlow School Management System
+        </footer>
+
+    </main>
+</div>
+
+<script>
+    const subjectForm = document.getElementById('subject-form');
+    const subjectsBody = document.getElementById('subjects-body');
+    const searchInput = document.getElementById('search-subjects');
+    const submitButton = document.getElementById('submit-button');
+    const statusMessage = document.getElementById('status-message');
+
+    let allSubjects = [];
+
+    // Display Messages
+    function showMessage(message, type) {
+        statusMessage.textContent = message;
+        statusMessage.className = 'status-message ' + type;
+
+        // Hide the message after a short period.
+        setTimeout(() => {
+            statusMessage.className = 'status-message';
+            statusMessage.textContent = '';
+        }, 4000);
+    }
+
+    // Safely Create A Table Cell
+    function createCell(value) {
+        const cell = document.createElement('td');
+        cell.textContent = value ?? '';
+        return cell;
+    }
+
+    // Load Subjects From The Server
+    async function fetchSubjects() {
+        subjectsBody.innerHTML = '';
+
+        const loadingRow = document.createElement('tr');
+        const loadingCell = createCell('Loading Subjects...');
+        loadingCell.colSpan = 5;
+        loadingCell.className = 'empty-message';
+        loadingRow.appendChild(loadingCell);
+        subjectsBody.appendChild(loadingRow);
+
+        try {
+            const response = await fetch('/api/subjects');
+
+            if (!response.ok) {
+                throw new Error('Unable To Load Subjects.');
+            }
+
+            const subjects = await response.json();
+
+            if (!Array.isArray(subjects)) {
+                throw new Error('Invalid Subject Data Received.');
+            }
+
+            allSubjects = subjects;
+            renderSubjects();
+
+        } catch (error) {
+            console.error('Error Fetching Subjects:', error);
+
+            subjectsBody.innerHTML = '';
+
+            const row = document.createElement('tr');
+            const cell = createCell(
+                'Unable To Load Subjects. Check Your Server And Database.'
+            );
+
+            cell.colSpan = 5;
+            cell.className = 'empty-message';
+            row.appendChild(cell);
+            subjectsBody.appendChild(row);
+
+            showMessage(
+                'Could Not Connect To The Subject API.',
+                'error'
+            );
+        }
+    }
+
+    // Display Subjects And Apply Search
+    function renderSubjects() {
+        subjectsBody.innerHTML = '';
+
+        const searchTerm = searchInput.value.trim().toLowerCase();
+
+        const filteredSubjects = allSubjects.filter(subject => {
+            return [
+                subject.id,
+                subject.subject_name,
+                subject.subject_code,
+                subject.assigned_teacher
+            ].some(value =>
+                String(value ?? '').toLowerCase().includes(searchTerm)
+            );
+        });
+
+        if (filteredSubjects.length === 0) {
+            const row = document.createElement('tr');
+            const cell = createCell(
+                allSubjects.length === 0
+                    ? 'No Subjects Have Been Added Yet.'
+                    : 'No Matching Subjects Found.'
+            );
+
+            cell.colSpan = 5;
+            cell.className = 'empty-message';
+            row.appendChild(cell);
+            subjectsBody.appendChild(row);
+            return;
+        }
+
+        filteredSubjects.forEach(subject => {
+            const row = document.createElement('tr');
+
+            row.appendChild(createCell(subject.id));
+            row.appendChild(createCell(subject.subject_name));
+
+            const codeCell = document.createElement('td');
+            const codeBadge = document.createElement('span');
+
+            codeBadge.className = 'subject-code';
+            codeBadge.textContent = subject.subject_code ?? '';
+
+            codeCell.appendChild(codeBadge);
+            row.appendChild(codeCell);
+
+            row.appendChild(
+                createCell(subject.assigned_teacher || 'Not Assigned')
+            );
+
+            const actionCell = document.createElement('td');
+            const deleteButton = document.createElement('button');
+
+            deleteButton.type = 'button';
+            deleteButton.className = 'btn btn-danger';
+            deleteButton.textContent = 'Delete';
+
+            deleteButton.addEventListener('click', () => {
+                deleteSubject(subject.id);
+            });
+
+            actionCell.appendChild(deleteButton);
+            row.appendChild(actionCell);
+
+            subjectsBody.appendChild(row);
+        });
+    }
+
+    // Add A New Subject
+    subjectForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const subject_name = document
+            .getElementById('subject_name')
+            .value.trim();
+
+        const subject_code = document
+            .getElementById('subject_code')
+            .value.trim();
+
+        const assigned_teacher = document
+            .getElementById('assigned_teacher')
+            .value.trim();
+
+        if (!subject_name || !subject_code) {
+            showMessage(
+                'Subject Name And Subject Code Are Required.',
+                'error'
+            );
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = 'Saving...';
+
+        try {
+            const response = await fetch('/api/subjects', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    subject_name,
+                    subject_code,
+                    assigned_teacher
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+
+                throw new Error(
+                    errorData.message || 'Failed To Add Subject.'
+                );
+            }
+
+            subjectForm.reset();
+
+            showMessage(
+                'Subject Added Successfully!',
+                'success'
+            );
+
+            await fetchSubjects();
+
+        } catch (error) {
+            console.error('Error Adding Subject:', error);
+
+            showMessage(
+                error.message || 'Could Not Add Subject.',
+                'error'
+            );
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = '+ Add Subject';
+        }
+    });
+
+    // Delete A Subject
+    async function deleteSubject(id) {
+        const confirmed = confirm(
+            'Are You Sure You Want To Delete This Subject?'
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `/api/subjects/${encodeURIComponent(id)}`,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed To Delete Subject.');
+            }
+
+            showMessage(
+                'Subject Deleted Successfully!',
+                'success'
+            );
+
+            await fetchSubjects();
+
+        } catch (error) {
+            console.error('Error Deleting Subject:', error);
+
+            showMessage(
+                'Could Not Delete Subject. Please Try Again.',
+                'error'
+            );
+        }
+    }
+
+    // Search Subjects
+    searchInput.addEventListener('input', renderSubjects);
+
+    // Load Data When The Page Opens
+    fetchSubjects();
+</script>
+
+</body>
+</html>

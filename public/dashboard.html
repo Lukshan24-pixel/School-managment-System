@@ -1,0 +1,894 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - School System</title>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --sidebar: #10233f;
+            --background: #f3f6fc;
+            --text: #1e293b;
+            --muted: #64748b;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+
+        .sidebar {
+            width: 255px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: var(--sidebar);
+            color: white;
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .brand-icon {
+            width: 45px;
+            height: 45px;
+            display: grid;
+            place-items: center;
+            background: var(--primary);
+            border-radius: 13px;
+            font-size: 24px;
+        }
+
+        .brand h2 {
+            font-size: 17px;
+            margin: 0;
+            color: white;
+        }
+
+        .brand p {
+            color: #a8b8d0;
+            font-size: 12px;
+            margin: 5px 0 0;
+        }
+
+        .nav-title {
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 28px 12px 12px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 14px;
+            margin: 4px 0;
+            border-radius: 9px;
+            color: #d1dbea;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.25s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+            transform: translateX(3px);
+        }
+
+        .nav-icon {
+            width: 23px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .logout {
+            background: rgba(220, 53, 69, 0.15);
+            color: #ffb4bb;
+        }
+
+        .logout:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Main Content */
+
+        .main {
+            margin-left: 255px;
+            padding: 28px 35px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            font-size: 25px;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .topbar p {
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .date-box {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 11px 15px;
+            border-radius: 10px;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .refresh-btn {
+            border: none;
+            background: var(--primary);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Welcome Banner */
+
+        .welcome-banner {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            background:
+                linear-gradient(100deg,
+                    rgba(20, 58, 125, 0.96),
+                    rgba(37, 99, 235, 0.84)),
+                url("https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1400&q=80")
+                center/cover;
+            margin-bottom: 28px;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.12);
+        }
+
+        .welcome-banner h2 {
+            color: white;
+            font-size: 25px;
+            margin: 0 0 10px;
+        }
+
+        .welcome-banner p {
+            color: #e0eaff;
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 0;
+            max-width: 520px;
+        }
+
+        .banner-decoration {
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            border: 30px solid rgba(255,255,255,0.08);
+            border-radius: 50%;
+            right: 55px;
+            top: -60px;
+            pointer-events: none;
+        }
+
+        /* Statistics Cards */
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            font-size: 19px;
+            margin: 0;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 13px;
+            margin: 5px 0 0;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e8edf5;
+            border-radius: 14px;
+            padding: 23px 20px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.025);
+            transition: transform 0.25s, box-shadow 0.25s;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.55s ease both;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(15, 23, 42, 0.09);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            font-size: 23px;
+        }
+
+        .students-icon {
+            background: #e8efff;
+            color: #2563eb;
+        }
+
+        .teachers-icon {
+            background: #e4f8ed;
+            color: #169654;
+        }
+
+        .classes-icon {
+            background: #fff4d6;
+            color: #b77900;
+        }
+
+        .subjects-icon {
+            background: #dff7fb;
+            color: #07839a;
+        }
+
+        .card-label {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 0 0 8px;
+        }
+
+        .card h3 {
+            font-size: 33px;
+            margin: 0;
+            font-weight: 750;
+            letter-spacing: -1px;
+        }
+
+        .card-footer {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 14px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 23px;
+            height: 23px;
+            border: 3px solid #dbeafe;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Quick Access */
+
+        .quick-panel {
+            background: white;
+            border: 1px solid #e8edf5;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.025);
+        }
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-top: 23px;
+        }
+
+        .menu a {
+            min-height: 125px;
+            padding: 20px 14px;
+            border: 1px solid #e5eaf3;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text);
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 12px;
+            transition: 0.25s;
+        }
+
+        .menu a:hover {
+            border-color: #93b4ff;
+            background: #f5f8ff;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.08);
+        }
+
+        .menu-icon {
+            font-size: 25px;
+        }
+
+        .menu strong {
+            font-size: 13px;
+        }
+
+        .menu small {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 25px 0 5px;
+        }
+
+        .error-message {
+            display: none;
+            margin: 0 0 20px;
+            padding: 13px 16px;
+            border-radius: 9px;
+            background: #fff1f2;
+            color: #be123c;
+            font-size: 13px;
+        }
+
+        .menu-toggle {
+            display: none;
+            border: 1px solid #dbe3ef;
+            background: white;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            display: none;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Tablet */
+
+        @media (max-width: 1100px) {
+            .main {
+                padding: 25px;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .menu {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        /* Mobile */
+
+        @media (max-width: 700px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .overlay.show {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(15, 23, 42, 0.5);
+                z-index: 90;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px 15px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .topbar h1 {
+                font-size: 21px;
+            }
+
+            .top-actions {
+                align-items: flex-end;
+                flex-direction: column;
+            }
+
+            .date-box {
+                display: none;
+            }
+
+            .welcome-banner {
+                padding: 25px 21px;
+            }
+
+            .welcome-banner h2 {
+                font-size: 21px;
+            }
+
+            .banner-decoration {
+                right: -100px;
+            }
+
+            .cards {
+                gap: 12px;
+            }
+
+            .card {
+                padding: 17px 14px;
+            }
+
+            .card h3 {
+                font-size: 28px;
+            }
+
+            .card-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .quick-panel {
+                padding: 18px;
+            }
+
+            .menu {
+                gap: 10px;
+            }
+
+            .menu a {
+                padding: 15px 12px;
+                min-height: 110px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">🎓</div>
+            <div>
+                <h2>Shaasha School</h2>
+                <p>Management Portal</p>
+            </div>
+        </div>
+
+        <div class="nav-title">MAIN MENU</div>
+
+        <a href="dashboard.html" class="nav-link active">
+            <span class="nav-icon">▦</span>
+            Dashboard
+        </a>
+
+        <a href="students.html" class="nav-link">
+            <span class="nav-icon">👨‍🎓</span>
+            Manage Students
+        </a>
+
+        <a href="teachers.html" class="nav-link">
+            <span class="nav-icon">👨‍🏫</span>
+            Manage Teachers
+        </a>
+
+        <a href="classes.html" class="nav-link">
+            <span class="nav-icon">🏫</span>
+            Manage Classes
+        </a>
+
+        <a href="subjects.html" class="nav-link">
+            <span class="nav-icon">📚</span>
+            Manage Subjects
+        </a>
+
+        <div class="sidebar-bottom">
+            <div class="nav-title">ACCOUNT</div>
+
+            <a href="index.html" class="nav-link logout">
+                <span class="nav-icon">↪</span>
+                Logout
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- Header -->
+        <header class="topbar">
+
+            <div style="display:flex; align-items:flex-start; gap:12px;">
+                <button class="menu-toggle"
+                        onclick="toggleSidebar()"
+                        aria-label="Toggle navigation"
+                        aria-controls="sidebar"
+                        aria-expanded="false"
+                        id="menuToggle">☰</button>
+
+                <div>
+                    <h1>Dashboard Of Shaasha School</h1>
+                    <p>Welcome back! Here is an overview of the system.</p>
+                </div>
+            </div>
+
+            <div class="top-actions">
+                <div class="date-box" id="current-date">Loading date...</div>
+
+                <button class="refresh-btn" id="refresh-btn"
+                        onclick="loadCounts()">↻ Refresh</button>
+            </div>
+
+        </header>
+
+        <!-- Welcome Banner -->
+        <section class="welcome-banner">
+            <div class="banner-decoration"></div>
+            <h2>Welcome Back!</h2>
+            <p>
+                Manage your school activities from one place.
+                View student, teacher, class and subject information
+                through your dashboard.
+            </p>
+        </section>
+
+        <!-- Error Message -->
+        <div class="error-message" id="error-message" role="alert">
+            Unable to load all dashboard counts. Please check your server
+            connection and try refreshing.
+        </div>
+
+        <!-- Statistics -->
+        <section>
+
+            <div class="section-heading">
+                <div>
+                    <h2>Dashboard Overview</h2>
+                    <p>A quick overview of your school system</p>
+                </div>
+            </div>
+
+            <div class="cards">
+
+                <div class="card" style="animation-delay:0.05s">
+                    <div class="card-top">
+                        <span class="card-icon students-icon">👨‍🎓</span>
+                    </div>
+                    <p class="card-label">Total Students</p>
+                    <h3 id="count-students">
+                        <span class="loading"></span>
+                    </h3>
+                    <div class="card-footer">Student records</div>
+                </div>
+
+                <div class="card" style="animation-delay:0.12s">
+                    <div class="card-top">
+                        <span class="card-icon teachers-icon">👨‍🏫</span>
+                    </div>
+                    <p class="card-label">Total Teachers</p>
+                    <h3 id="count-teachers">
+                        <span class="loading"></span>
+                    </h3>
+                    <div class="card-footer">Teacher records</div>
+                </div>
+
+                <div class="card" style="animation-delay:0.19s">
+                    <div class="card-top">
+                        <span class="card-icon classes-icon">🏫</span>
+                    </div>
+                    <p class="card-label">Total Classes</p>
+                    <h3 id="count-classes">
+                        <span class="loading"></span>
+                    </h3>
+                    <div class="card-footer">Registered classes</div>
+                </div>
+
+                <div class="card" style="animation-delay:0.26s">
+                    <div class="card-top">
+                        <span class="card-icon subjects-icon">📚</span>
+                    </div>
+                    <p class="card-label">Total Subjects</p>
+                    <h3 id="count-subjects">
+                        <span class="loading"></span>
+                    </h3>
+                    <div class="card-footer">Available subjects</div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Quick Access Menu -->
+        <section class="quick-panel">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Quick Access Menu</h2>
+                    <p>Quickly access your management pages</p>
+                </div>
+            </div>
+
+            <div class="menu">
+
+                <a href="students.html">
+                    <span class="menu-icon">👨‍🎓</span>
+                    <div>
+                        <strong>Manage Students</strong>
+                        <small>View student records</small>
+                    </div>
+                </a>
+
+                <a href="teachers.html">
+                    <span class="menu-icon">👨‍🏫</span>
+                    <div>
+                        <strong>Manage Teachers</strong>
+                        <small>View teacher records</small>
+                    </div>
+                </a>
+
+                <a href="classes.html">
+                    <span class="menu-icon">🏫</span>
+                    <div>
+                        <strong>Manage Classes</strong>
+                        <small>View class information</small>
+                    </div>
+                </a>
+
+                <a href="subjects.html">
+                    <span class="menu-icon">📚</span>
+                    <div>
+                        <strong>Manage Subjects</strong>
+                        <small>View subject information</small>
+                    </div>
+                </a>
+
+            </div>
+
+        </section>
+
+        <footer class="footer">
+            School Management System · Dashboard
+        </footer>
+
+    </main>
+
+    <script>
+        // Display the current date
+        function updateDate() {
+            const now = new Date();
+
+            document.getElementById("current-date").textContent =
+                now.toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric"
+                });
+        }
+
+        // Mobile sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("overlay");
+            const button = document.getElementById("menuToggle");
+
+            const isOpen = sidebar.classList.toggle("open");
+
+            overlay.classList.toggle("show", isOpen);
+            button.setAttribute("aria-expanded", String(isOpen));
+        }
+
+        // Animate the numbers
+        function animateCount(element, target) {
+            const duration = 650;
+            const startTime = performance.now();
+
+            function updateNumber(currentTime) {
+                const progress = Math.min(
+                    (currentTime - startTime) / duration, 1
+                );
+
+                const eased = 1 - Math.pow(1 - progress, 3);
+                element.textContent = Math.floor(target * eased);
+
+                if (progress < 1) {
+                    requestAnimationFrame(updateNumber);
+                }
+            }
+
+            requestAnimationFrame(updateNumber);
+        }
+
+        // Get counts from the backend API
+        async function loadCounts() {
+            const button = document.getElementById("refresh-btn");
+            const errorMessage = document.getElementById("error-message");
+
+            const originalText = "↻ Refresh";
+
+            button.disabled = true;
+            button.textContent = "Loading...";
+            errorMessage.style.display = "none";
+
+            const endpoints = [
+                {
+                    url: "/api/students",
+                    id: "count-students"
+                },
+                {
+                    url: "/api/teachers",
+                    id: "count-teachers"
+                },
+                {
+                    url: "/api/classes",
+                    id: "count-classes"
+                },
+                {
+                    url: "/api/subjects",
+                    id: "count-subjects"
+                }
+            ];
+
+            let hasError = false;
+
+            try {
+                await Promise.all(endpoints.map(async endpoint => {
+                    const element = document.getElementById(endpoint.id);
+
+                    try {
+                        const response = await fetch(endpoint.url);
+
+                        if (!response.ok) {
+                            throw new Error(
+                                "Request failed: " + endpoint.url
+                            );
+                        }
+
+                        const data = await response.json();
+
+                        // API must return an array of records
+                        if (!Array.isArray(data)) {
+                            throw new Error(
+                                "Expected an array from " + endpoint.url
+                            );
+                        }
+
+                        animateCount(element, data.length);
+
+                    } catch (error) {
+                        hasError = true;
+                        element.textContent = "—";
+                        console.error(error);
+                    }
+                }));
+
+                if (hasError) {
+                    errorMessage.style.display = "block";
+                }
+
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        }
+
+        // Start the dashboard
+        updateDate();
+        loadCounts();
+    </script>
+
+</body>
+</html>

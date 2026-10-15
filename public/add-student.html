@@ -1,0 +1,807 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Student | CampusFlow</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fc;
+            color: #1e293b;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+
+        .sidebar {
+            width: 245px;
+            flex-shrink: 0;
+            background: #142d4e;
+            color: white;
+            padding: 25px 18px;
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: bold;
+            padding: 5px 10px 30px;
+        }
+
+        .brand span {
+            color: #60a5fa;
+        }
+
+        .nav-title {
+            color: #a9bad0;
+            font-size: 11px;
+            margin: 12px 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-link {
+            display: block;
+            color: #dce7f5;
+            text-decoration: none;
+            padding: 13px 12px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #2563a6;
+            color: white;
+        }
+
+        /* Main Content */
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .user-badge {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Breadcrumb */
+
+        .breadcrumb {
+            margin-bottom: 22px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .breadcrumb a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Card */
+
+        .card {
+            background: white;
+            border: 1px solid #e7edf5;
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: 0 4px 15px rgba(30, 58, 95, 0.04);
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 22px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #e8edf4;
+        }
+
+        .heading-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            background: #eaf2ff;
+            color: #2563eb;
+            font-size: 24px;
+        }
+
+        .card-heading h2 {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .card-heading p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #233b59;
+            margin-bottom: 18px;
+        }
+
+        /* Form Fields */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 21px;
+        }
+
+        .form-group {
+            min-width: 0;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #d5deea;
+            border-radius: 8px;
+            outline: none;
+            background: white;
+            color: #1e293b;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #9aa8ba;
+        }
+
+        textarea {
+            min-height: 95px;
+            resize: vertical;
+        }
+
+        .field-hint {
+            margin-top: 6px;
+            font-size: 11px;
+            color: #8492a6;
+            line-height: 1.5;
+        }
+
+        /* Information Message */
+
+        .info-box {
+            display: flex;
+            gap: 11px;
+            align-items: flex-start;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 9px;
+            padding: 14px;
+            margin-top: 25px;
+            color: #1e40af;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .info-icon {
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+        /* Status Messages */
+
+        .status-message {
+            display: none;
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .status-message.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-message.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Buttons */
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid #e8edf4;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 19px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #e8eef7;
+            color: #334155;
+        }
+
+        .btn-secondary:hover {
+            background: #dbe5f2;
+        }
+
+        .btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 22px 10px;
+        }
+
+        /* Responsive Design */
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                padding: 22px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .brand {
+                padding-bottom: 15px;
+            }
+
+            .nav-title {
+                display: none;
+            }
+
+            .nav-menu {
+                display: flex;
+                overflow-x: auto;
+                gap: 6px;
+            }
+
+            .nav-link {
+                white-space: nowrap;
+                margin: 0;
+                padding: 10px;
+            }
+
+            .main {
+                padding: 17px;
+            }
+
+            .topbar h1 {
+                font-size: 23px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+
+            .user-badge {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="brand">Campus<span>Flow</span></div>
+
+        <p class="nav-title">Main Menu</p>
+
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="students.html" class="nav-link active">Students</a>
+            <a href="teachers.html" class="nav-link">Teachers</a>
+            <a href="classes.html" class="nav-link">Classes</a>
+            <a href="subjects.html" class="nav-link">Subjects</a>
+            <a href="attendance.html" class="nav-link">Attendance</a>
+            <a href="results.html" class="nav-link">Results</a>
+        </nav>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>Add New Student</h1>
+                <p class="subtitle">
+                    Register A New Student In Your School System
+                </p>
+            </div>
+
+            <div class="user-badge">
+                School Administrator
+            </div>
+        </header>
+
+        <div class="breadcrumb">
+            <a href="dashboard.html">Dashboard</a>
+            &nbsp; / &nbsp;
+            <a href="students.html">Students</a>
+            &nbsp; / &nbsp;
+            Add Student
+        </div>
+
+        <div id="status-message"
+             class="status-message"
+             role="status"
+             aria-live="polite"></div>
+
+        <!-- Student Registration Form -->
+        <section class="card">
+
+            <div class="card-heading">
+                <div class="heading-icon" aria-hidden="true">♙</div>
+
+                <div>
+                    <h2>Student Information</h2>
+                    <p>
+                        Complete The Student Details Below.
+                        Fields Marked With * Are Required.
+                    </p>
+                </div>
+            </div>
+
+            <form id="add-student-form">
+
+                <h3 class="section-title">Personal Details</h3>
+
+                <div class="form-grid">
+
+                    <div class="form-group full-width">
+                        <label for="name">
+                            Full Name <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            maxlength="100"
+                            autocomplete="name"
+                            placeholder="Enter Student's Full Name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dob">
+                            Date Of Birth <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="date"
+                            id="dob"
+                            name="dob"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">
+                            Gender <span class="required">*</span>
+                        </label>
+
+                        <select id="gender" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="address">Residential Address</label>
+
+                        <textarea
+                            id="address"
+                            name="address"
+                            maxlength="500"
+                            autocomplete="street-address"
+                            placeholder="Enter Residential Address"
+                        ></textarea>
+                    </div>
+
+                </div>
+
+                <h3 class="section-title" style="margin-top: 30px;">
+                    Contact Details
+                </h3>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            maxlength="20"
+                            autocomplete="tel"
+                            placeholder="E.g. 0771234567"
+                        >
+
+                        <p class="field-hint">
+                            Enter The Student's Contact Number.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">
+                            Email Address <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            maxlength="150"
+                            autocomplete="email"
+                            placeholder="student@example.com"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+                <h3 class="section-title" style="margin-top: 30px;">
+                    Academic Details
+                </h3>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="class_name">Class</label>
+
+                        <input
+                            type="text"
+                            id="class_name"
+                            name="class_name"
+                            maxlength="50"
+                            placeholder="E.g. Grade 10-A"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="enrollment_date">
+                            Enrollment Date <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="date"
+                            id="enrollment_date"
+                            name="enrollment_date"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+                <div class="info-box">
+                    <span class="info-icon" aria-hidden="true">ⓘ</span>
+
+                    <p>
+                        The Student ID Is Generated Automatically By The
+                        Database. You Do Not Need To Enter It Manually.
+                        Please Check All Details Before Saving.
+                    </p>
+                </div>
+
+                <div class="form-actions">
+
+                    <button type="reset"
+                            class="btn btn-secondary"
+                            id="clear-button">
+                        Clear Form
+                    </button>
+
+                    <a href="students.html"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary"
+                            id="save-button">
+                        <span aria-hidden="true">＋</span>
+                        Save Student
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <footer class="footer">
+            CampusFlow School Management System
+        </footer>
+
+    </main>
+
+</div>
+
+<script>
+    const studentForm = document.getElementById('add-student-form');
+    const saveButton = document.getElementById('save-button');
+    const statusMessage = document.getElementById('status-message');
+
+    // Show Success Or Error Messages
+    function showMessage(message, type) {
+        statusMessage.textContent = message;
+        statusMessage.className = 'status-message ' + type;
+
+        statusMessage.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest'
+        });
+    }
+
+    // Prevent Future Dates For Date Of Birth
+    const today = new Date();
+    const todayString =
+        today.getFullYear() + '-' +
+        String(today.getMonth() + 1).padStart(2, '0') + '-' +
+        String(today.getDate()).padStart(2, '0');
+
+    document.getElementById('dob').max = todayString;
+    document.getElementById('enrollment_date').max = todayString;
+
+    // Clear Old Messages When Editing The Form
+    studentForm.addEventListener('input', function() {
+        statusMessage.className = 'status-message';
+        statusMessage.textContent = '';
+    });
+
+    // Submit Student Details
+    studentForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const studentData = {
+            name: document.getElementById('name').value.trim(),
+            dob: document.getElementById('dob').value,
+            gender: document.getElementById('gender').value,
+            address: document.getElementById('address').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            class_name: document.getElementById('class_name').value.trim(),
+            enrollment_date:
+                document.getElementById('enrollment_date').value
+        };
+
+        // Validate Required Fields
+        if (
+            !studentData.name ||
+            !studentData.dob ||
+            !studentData.gender ||
+            !studentData.email ||
+            !studentData.enrollment_date
+        ) {
+            showMessage(
+                'Please Complete All Required Fields.',
+                'error'
+            );
+            return;
+        }
+
+        // Validate Date Of Birth
+        if (studentData.dob > todayString) {
+            showMessage(
+                'Date Of Birth Cannot Be In The Future.',
+                'error'
+            );
+            return;
+        }
+
+        // Validate Enrollment Date
+        if (studentData.enrollment_date > todayString) {
+            showMessage(
+                'Enrollment Date Cannot Be In The Future.',
+                'error'
+            );
+            return;
+        }
+
+        saveButton.disabled = true;
+        saveButton.innerHTML = 'Saving Student...';
+
+        try {
+            const response = await fetch('/api/students', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(studentData)
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error || 'Failed To Add Student.'
+                );
+            }
+
+            showMessage(
+                'Student Added Successfully! Redirecting To Student List...',
+                'success'
+            );
+
+            studentForm.reset();
+
+            // Return To Student List After A Successful Save
+            setTimeout(function() {
+                window.location.href = 'students.html';
+            }, 1200);
+
+        } catch (error) {
+            console.error('Error Adding Student:', error);
+
+            showMessage(
+                error.message ||
+                'Unable To Connect To The Server. Please Try Again.',
+                'error'
+            );
+
+        } finally {
+            saveButton.disabled = false;
+            saveButton.innerHTML =
+                '<span aria-hidden="true">＋</span> Save Student';
+        }
+    });
+</script>
+
+</body>
+</html>

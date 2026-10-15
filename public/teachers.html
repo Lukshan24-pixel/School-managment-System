@@ -1,0 +1,1381 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Management - School System</title>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --sidebar: #10233f;
+            --background: #f3f6fc;
+            --text: #1e293b;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 255px;
+            height: 100vh;
+            position: fixed;
+            inset: 0 auto 0 0;
+            background: var(--sidebar);
+            color: white;
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .brand-icon {
+            width: 45px;
+            height: 45px;
+            display: grid;
+            place-items: center;
+            background: var(--primary);
+            border-radius: 13px;
+            font-size: 24px;
+        }
+
+        .brand h2 {
+            margin: 0;
+            color: white;
+            font-size: 17px;
+        }
+
+        .brand p {
+            margin: 5px 0 0;
+            color: #a8b8d0;
+            font-size: 12px;
+        }
+
+        .nav-title {
+            padding: 28px 12px 12px;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 14px;
+            margin: 4px 0;
+            border-radius: 9px;
+            color: #d1dbea;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.25s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+            transform: translateX(3px);
+        }
+
+        .nav-icon {
+            width: 23px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .logout {
+            color: #ffb4bb;
+            background: rgba(220,53,69,0.15);
+        }
+
+        .logout:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* MAIN CONTENT */
+
+        .main {
+            margin-left: 255px;
+            padding: 28px 35px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 28px;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .page-title h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .page-title p {
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .date-box {
+            padding: 11px 15px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .menu-toggle {
+            display: none;
+            padding: 9px 12px;
+            border: 1px solid #dbe3ef;
+            background: white;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* BUTTONS */
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+            padding: 11px 17px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.25s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-green {
+            background: #159957;
+        }
+
+        .btn-green:hover {
+            background: #107c46;
+        }
+
+        .btn-danger {
+            padding: 7px 11px;
+            background: #fff0f0;
+            color: #dc3545;
+            border: 1px solid #ffd5d5;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .refresh-btn {
+            background: white;
+            color: var(--primary);
+            border: 1px solid #dbe5f5;
+        }
+
+        .refresh-btn:hover {
+            background: #eff6ff;
+        }
+
+        /* WELCOME BANNER */
+
+        .welcome-banner {
+            position: relative;
+            overflow: hidden;
+            padding: 29px 30px;
+            margin-bottom: 26px;
+            border-radius: 16px;
+            color: white;
+            background:
+                linear-gradient(100deg,
+                    rgba(20,58,125,0.96),
+                    rgba(37,99,235,0.85)),
+                url("https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1400&q=80")
+                center/cover;
+            box-shadow: 0 10px 25px rgba(37,99,235,0.12);
+        }
+
+        .welcome-banner h2 {
+            margin: 0 0 9px;
+            color: white;
+            font-size: 23px;
+        }
+
+        .welcome-banner p {
+            max-width: 600px;
+            margin: 0;
+            color: #e0eaff;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .banner-decoration {
+            position: absolute;
+            top: -65px;
+            right: 55px;
+            width: 170px;
+            height: 170px;
+            border: 28px solid rgba(255,255,255,0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* STATISTICS */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0,1fr));
+            gap: 18px;
+            margin-bottom: 26px;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 21px;
+            background: white;
+            border: 1px solid #e8edf5;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(15,23,42,0.025);
+            transition: 0.25s;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 23px rgba(15,23,42,0.07);
+        }
+
+        .stat-icon {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            font-size: 25px;
+        }
+
+        .blue-icon {
+            background: #e8efff;
+        }
+
+        .green-icon {
+            background: #e4f8ed;
+        }
+
+        .orange-icon {
+            background: #fff4d6;
+        }
+
+        .stat-label {
+            margin: 0 0 7px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .stat-value {
+            margin: 0;
+            font-size: 25px;
+            font-weight: 750;
+        }
+
+        /* NOTIFICATIONS */
+
+        .message {
+            display: none;
+            padding: 13px 16px;
+            margin-bottom: 20px;
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+        .message.success {
+            display: block;
+            background: #e8f8ee;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .message.error {
+            display: block;
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+        }
+
+        /* PANELS */
+
+        .panel {
+            overflow: hidden;
+            background: white;
+            border: 1px solid #e8edf5;
+            border-radius: 15px;
+            margin-bottom: 26px;
+            box-shadow: 0 4px 14px rgba(15,23,42,0.025);
+        }
+
+        .panel-header {
+            padding: 23px 24px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .panel-header h2 {
+            margin: 0;
+            font-size: 19px;
+        }
+
+        .panel-header p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .form-content {
+            padding: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        input,
+        select,
+        textarea {
+            display: block;
+            width: 100%;
+            padding: 12px 13px;
+            box-sizing: border-box;
+            border: 1px solid #dbe3ef;
+            border-radius: 9px;
+            background: #f9fbff;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        textarea {
+            min-height: 95px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding-top: 5px;
+        }
+
+        .btn-secondary {
+            background: #eef2f7;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #dfe7f1;
+        }
+
+        /* TEACHER TABLE */
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 23px 24px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .table-header h2 {
+            margin: 0;
+            font-size: 19px;
+        }
+
+        .table-header p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .search-box {
+            width: 290px;
+            max-width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dbe3ef;
+            border-radius: 9px;
+            background: #f9fbff;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            min-width: 800px;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 16px 15px;
+            background: #f5f8fe;
+            color: #475569;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            border-bottom: 1px solid #e7edf6;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #edf0f5;
+            color: #475569;
+            text-align: left;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f5f8ff;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .teacher-name {
+            color: #1e293b;
+            font-weight: 650;
+        }
+
+        .teacher-id {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .gender-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 6px;
+            background: #edf3ff;
+            color: #2859b8;
+            font-size: 11px;
+        }
+
+        .table-message {
+            padding: 40px 20px !important;
+            color: var(--muted);
+            text-align: center;
+            white-space: normal;
+            font-size: 14px;
+        }
+
+        .panel-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px 24px;
+            background: #fbfcff;
+            border-top: 1px solid #edf0f5;
+        }
+
+        .results-text {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer {
+            padding: 25px 0 5px;
+            color: #94a3b8;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .overlay {
+            display: none;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1100px) {
+            .main {
+                padding: 25px;
+            }
+
+            .stats-grid {
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 16px;
+                gap: 10px;
+            }
+
+            .stat-icon {
+                width: 43px;
+                height: 43px;
+                font-size: 21px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .overlay.show {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(15,23,42,0.5);
+                z-index: 90;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 19px 13px;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .page-title h1 {
+                font-size: 20px;
+            }
+
+            .page-title p {
+                font-size: 12px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .top-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .date-box {
+                display: none;
+            }
+
+            .welcome-banner {
+                padding: 24px 20px;
+            }
+
+            .welcome-banner h2 {
+                font-size: 20px;
+            }
+
+            .banner-decoration {
+                right: -90px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .form-content {
+                padding: 19px;
+            }
+
+            .panel-header,
+            .table-header {
+                padding: 19px 16px;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .panel-footer {
+                padding: 14px 16px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">🎓</div>
+            <div>
+                <h2>Shaasha School</h2>
+                <p>Management Portal</p>
+            </div>
+        </div>
+
+        <div class="nav-title">MAIN MENU</div>
+
+        <a href="dashboard.html" class="nav-link">
+            <span class="nav-icon">▦</span>
+            Dashboard
+        </a>
+
+        <a href="students.html" class="nav-link">
+            <span class="nav-icon">👨‍🎓</span>
+            Manage Students
+        </a>
+
+        <a href="teachers.html" class="nav-link active">
+            <span class="nav-icon">👨‍🏫</span>
+            Manage Teachers
+        </a>
+
+        <a href="classes.html" class="nav-link">
+            <span class="nav-icon">🏫</span>
+            Manage Classes
+        </a>
+
+        <a href="subjects.html" class="nav-link">
+            <span class="nav-icon">📚</span>
+            Manage Subjects
+        </a>
+
+        <div class="sidebar-bottom">
+            <div class="nav-title">ACCOUNT</div>
+
+            <a href="index.html" class="nav-link logout">
+                <span class="nav-icon">↪</span>
+                Logout
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <header class="topbar">
+
+            <div class="page-title">
+                <button class="menu-toggle"
+                        id="menuToggle"
+                        onclick="toggleSidebar()"
+                        aria-label="Toggle navigation"
+                        aria-controls="sidebar"
+                        aria-expanded="false">☰</button>
+
+                <div>
+                    <h1>Teacher Management</h1>
+                    <p>Add, search and manage teacher information.</p>
+                </div>
+            </div>
+
+            <div class="top-actions">
+                <div class="date-box" id="current-date"></div>
+
+                <button class="btn refresh-btn"
+                        id="refresh-btn"
+                        onclick="fetchTeachers()">↻ Refresh</button>
+            </div>
+
+        </header>
+
+        <!-- WELCOME BANNER -->
+        <section class="welcome-banner">
+            <div class="banner-decoration"></div>
+            <h2>Teacher Records</h2>
+            <p>
+                Manage your teaching staff from one place.
+                Add teacher information, review assigned subjects
+                and keep your staff records organised.
+            </p>
+        </section>
+
+        <!-- NOTIFICATION -->
+        <div id="message" class="message" role="status"
+             aria-live="polite"></div>
+
+        <!-- STATISTICS -->
+        <section class="stats-grid">
+
+            <div class="stat-card" style="animation-delay:0.05s">
+                <div class="stat-icon blue-icon">👨‍🏫</div>
+                <div>
+                    <p class="stat-label">Total Teachers</p>
+                    <h3 class="stat-value" id="total-teachers">—</h3>
+                </div>
+            </div>
+
+            <div class="stat-card" style="animation-delay:0.12s">
+                <div class="stat-icon green-icon">🔍</div>
+                <div>
+                    <p class="stat-label">Search Results</p>
+                    <h3 class="stat-value" id="visible-teachers">—</h3>
+                </div>
+            </div>
+
+            <div class="stat-card" style="animation-delay:0.19s">
+                <div class="stat-icon orange-icon">📚</div>
+                <div>
+                    <p class="stat-label">Assigned Subjects</p>
+                    <h3 class="stat-value" id="total-subjects">—</h3>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ADD TEACHER FORM -->
+        <section class="panel">
+
+            <div class="panel-header">
+                <h2>＋ Add New Teacher</h2>
+                <p>Enter the teacher's details in the form below.</p>
+            </div>
+
+            <div class="form-content">
+
+                <form id="teacher-form">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="name">
+                                Full Name <span class="required">*</span>
+                            </label>
+                            <input type="text" id="name"
+                                   name="name"
+                                   required
+                                   maxlength="150"
+                                   autocomplete="name"
+                                   placeholder="Enter teacher's full name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone"
+                                   name="phone"
+                                   maxlength="30"
+                                   autocomplete="tel"
+                                   placeholder="Enter phone number">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">
+                                Email Address <span class="required">*</span>
+                            </label>
+                            <input type="email" id="email"
+                                   name="email"
+                                   required
+                                   maxlength="254"
+                                   autocomplete="email"
+                                   placeholder="teacher@example.com">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="address">Address</label>
+                            <textarea id="address"
+                                      name="address"
+                                      maxlength="500"
+                                      autocomplete="street-address"
+                                      placeholder="Enter residential address"></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="assigned_subject">
+                                Assigned Subject
+                            </label>
+                            <input type="text"
+                                   id="assigned_subject"
+                                   name="assigned_subject"
+                                   maxlength="150"
+                                   placeholder="Enter assigned subject">
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit"
+                                class="btn btn-green"
+                                id="submit-btn">
+                            ＋ Add Teacher
+                        </button>
+
+                        <button type="reset"
+                                class="btn btn-secondary">
+                            Clear Form
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+        <!-- EXISTING TEACHERS -->
+        <section class="panel">
+
+            <div class="table-header">
+
+                <div>
+                    <h2>Existing Teachers</h2>
+                    <p>View, search and manage registered teachers.</p>
+                </div>
+
+                <input type="search"
+                       id="search-input"
+                       class="search-box"
+                       placeholder="Search name, email or subject..."
+                       aria-label="Search teachers">
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table id="teachers-table">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="teachers-body">
+                        <tr>
+                            <td colspan="7" class="table-message">
+                                Loading teacher records...
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="panel-footer">
+                <span class="results-text" id="results-text">
+                    Loading records...
+                </span>
+                <span class="results-text">School Management System</span>
+            </div>
+
+        </section>
+
+        <footer class="footer">
+            School Management System · Teacher Management
+        </footer>
+
+    </main>
+
+    <script>
+        let allTeachers = [];
+        let messageTimer;
+
+        // CURRENT DATE
+        function updateDate() {
+            document.getElementById("current-date").textContent =
+                new Date().toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric"
+                });
+        }
+
+        // MOBILE SIDEBAR
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("overlay");
+            const button = document.getElementById("menuToggle");
+
+            const isOpen = sidebar.classList.toggle("open");
+
+            overlay.classList.toggle("show", isOpen);
+            button.setAttribute("aria-expanded", String(isOpen));
+        }
+
+        // SHOW SUCCESS OR ERROR MESSAGE
+        function showMessage(text, type) {
+            const box = document.getElementById("message");
+
+            clearTimeout(messageTimer);
+
+            box.textContent = text;
+            box.className = "message " + type;
+
+            messageTimer = setTimeout(() => {
+                box.className = "message";
+                box.textContent = "";
+            }, 5000);
+        }
+
+        // SAFELY CREATE TABLE CELLS
+        function createCell(row, value, className = "") {
+            const cell = document.createElement("td");
+
+            cell.textContent =
+                value === null || value === undefined || value === ""
+                    ? "N/A"
+                    : String(value);
+
+            if (className) {
+                cell.className = className;
+            }
+
+            row.appendChild(cell);
+            return cell;
+        }
+
+        // EMPTY TABLE MESSAGE
+        function showTableMessage(text) {
+            const tbody = document.getElementById("teachers-body");
+            tbody.replaceChildren();
+
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+
+            cell.colSpan = 7;
+            cell.className = "table-message";
+            cell.textContent = text;
+
+            row.appendChild(cell);
+            tbody.appendChild(row);
+        }
+
+        // UPDATE STATISTICS
+        function updateStatistics(visibleTeachers) {
+            document.getElementById("total-teachers").textContent =
+                allTeachers.length;
+
+            document.getElementById("visible-teachers").textContent =
+                visibleTeachers.length;
+
+            const subjects = new Set(
+                allTeachers
+                    .map(t => String(t.assigned_subject || "").trim())
+                    .filter(subject => subject !== "")
+            );
+
+            document.getElementById("total-subjects").textContent =
+                subjects.size;
+
+            document.getElementById("results-text").textContent =
+                `Showing ${visibleTeachers.length} of ${allTeachers.length} teachers`;
+        }
+
+        // DISPLAY TEACHERS
+        function displayTeachers(teachers) {
+            const tbody = document.getElementById("teachers-body");
+            tbody.replaceChildren();
+
+            if (teachers.length === 0) {
+                showTableMessage(
+                    allTeachers.length === 0
+                        ? "No teachers found. Add your first teacher using the form above."
+                        : "No teachers match your search."
+                );
+
+                updateStatistics(teachers);
+                return;
+            }
+
+            teachers.forEach(teacher => {
+                const row = document.createElement("tr");
+
+                createCell(row, teacher.id, "teacher-id");
+                createCell(row, teacher.name, "teacher-name");
+
+                const genderCell = document.createElement("td");
+                const badge = document.createElement("span");
+
+                badge.className = "gender-badge";
+                badge.textContent = teacher.gender || "N/A";
+
+                genderCell.appendChild(badge);
+                row.appendChild(genderCell);
+
+                createCell(row, teacher.phone);
+                createCell(row, teacher.email);
+                createCell(row, teacher.assigned_subject);
+
+                const actionCell = document.createElement("td");
+                const deleteButton = document.createElement("button");
+
+                deleteButton.type = "button";
+                deleteButton.className = "btn btn-danger";
+                deleteButton.textContent = "Delete";
+
+                deleteButton.addEventListener("click", () => {
+                    deleteTeacher(teacher.id, deleteButton);
+                });
+
+                actionCell.appendChild(deleteButton);
+                row.appendChild(actionCell);
+
+                tbody.appendChild(row);
+            });
+
+            updateStatistics(teachers);
+        }
+
+        // SEARCH TEACHERS
+        function filterTeachers() {
+            const query = document.getElementById("search-input")
+                .value.trim().toLowerCase();
+
+            const filtered = allTeachers.filter(teacher => {
+                const name = String(teacher.name || "").toLowerCase();
+                const email = String(teacher.email || "").toLowerCase();
+                const subject = String(
+                    teacher.assigned_subject || ""
+                ).toLowerCase();
+                const phone = String(teacher.phone || "").toLowerCase();
+
+                return name.includes(query) ||
+                       email.includes(query) ||
+                       subject.includes(query) ||
+                       phone.includes(query);
+            });
+
+            displayTeachers(filtered);
+        }
+
+        // FETCH TEACHERS
+        async function fetchTeachers() {
+            const button = document.getElementById("refresh-btn");
+            const originalText = "↻ Refresh";
+
+            button.disabled = true;
+            button.textContent = "Loading...";
+
+            try {
+                const response = await fetch("/api/teachers");
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Server returned status " + response.status
+                    );
+                }
+
+                const teachers = await response.json();
+
+                if (!Array.isArray(teachers)) {
+                    throw new Error(
+                        "The teachers API must return a JSON array."
+                    );
+                }
+
+                allTeachers = teachers;
+                filterTeachers();
+
+            } catch (error) {
+                console.error("Error fetching teachers:", error);
+
+                document.getElementById("total-teachers").textContent = "—";
+                document.getElementById("visible-teachers").textContent = "—";
+                document.getElementById("total-subjects").textContent = "—";
+                document.getElementById("results-text").textContent =
+                    "Unable to load records";
+
+                showTableMessage(
+                    "Unable to load teacher records. Check the server and try again."
+                );
+
+                showMessage(
+                    "Failed to load teachers. Please check your server connection.",
+                    "error"
+                );
+
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        }
+
+        // ADD TEACHER
+        document.getElementById("teacher-form")
+            .addEventListener("submit", async function(event) {
+                event.preventDefault();
+
+                const form = this;
+                const button = document.getElementById("submit-btn");
+
+                const data = {
+                    name: document.getElementById("name").value.trim(),
+                    gender: document.getElementById("gender").value,
+                    phone: document.getElementById("phone").value.trim(),
+                    email: document.getElementById("email").value.trim(),
+                    address: document.getElementById("address").value.trim(),
+                    assigned_subject: document
+                        .getElementById("assigned_subject").value.trim()
+                };
+
+                if (!form.reportValidity()) {
+                    return;
+                }
+
+                button.disabled = true;
+                button.textContent = "Adding Teacher...";
+
+                try {
+                    const response = await fetch("/api/teachers", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!response.ok) {
+                        let errorText = "Failed to add teacher.";
+
+                        try {
+                            const result = await response.json();
+
+                            if (result.message) {
+                                errorText = result.message;
+                            }
+                        } catch (_) {
+                            // Keep the default error message.
+                        }
+
+                        throw new Error(errorText);
+                    }
+
+                    form.reset();
+                    document.getElementById("search-input").value = "";
+
+                    await fetchTeachers();
+
+                    showMessage(
+                        "Teacher added successfully!",
+                        "success"
+                    );
+
+                } catch (error) {
+                    console.error("Error adding teacher:", error);
+
+                    showMessage(
+                        error.message || "Failed to add teacher. Please try again.",
+                        "error"
+                    );
+
+                } finally {
+                    button.disabled = false;
+                    button.textContent = "＋ Add Teacher";
+                }
+            });
+
+        // DELETE TEACHER
+        async function deleteTeacher(id, button) {
+            if (id === null || id === undefined || id === "") {
+                showMessage("Cannot delete: teacher ID is missing.", "error");
+                return;
+            }
+
+            const confirmed = confirm(
+                "Are you sure you want to delete this teacher?"
+            );
+
+            if (!confirmed) return;
+
+            button.disabled = true;
+            button.textContent = "Deleting...";
+
+            try {
+                const response = await fetch(
+                    `/api/teachers/${encodeURIComponent(id)}`,
+                    { method: "DELETE" }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to delete teacher.");
+                }
+
+                allTeachers = allTeachers.filter(
+                    teacher => String(teacher.id) !== String(id)
+                );
+
+                filterTeachers();
+
+                showMessage(
+                    "Teacher deleted successfully!",
+                    "success"
+                );
+
+            } catch (error) {
+                console.error("Error deleting teacher:", error);
+
+                button.disabled = false;
+                button.textContent = "Delete";
+
+                showMessage(
+                    "Failed to delete teacher. Please try again.",
+                    "error"
+                );
+            }
+        }
+
+        // LIVE SEARCH
+        document.getElementById("search-input")
+            .addEventListener("input", filterTeachers);
+
+        // INITIALISE PAGE
+        updateDate();
+        fetchTeachers();
+    </script>
+
+</body>
+</html>
